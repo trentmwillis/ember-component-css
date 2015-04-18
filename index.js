@@ -12,6 +12,7 @@ function monkeyPatch(EmberApp) {
   var upstreamMergeTrees = require('broccoli-merge-trees');
   var p = require('ember-cli/lib/preprocessors');
   var preprocessCss = p.preprocessCss;
+  var preprocessMinifyCss = p.preprocessMinifyCss;
 
   function mergeTrees(inputTree, options) {
     var tree = upstreamMergeTrees(inputTree, options);
@@ -73,7 +74,7 @@ function monkeyPatch(EmberApp) {
     var options = { outputPaths: this.options.outputPaths.app.css };
     options.registry = this.registry;
     var processedStyles = preprocessCss(stylesAndVendor, '/app/styles', '/assets', options);
-    var vendorStyles    = this.concatFiles(stylesAndVendor, {
+    var vendorStyles = this.concatFiles(stylesAndVendor, {
       inputFiles: this.vendorStaticStyles.concat(['vendor/addons.css']),
       outputFile: this.options.outputPaths.vendor.css,
       description: 'Concat: Vendor Styles'
@@ -83,7 +84,7 @@ function monkeyPatch(EmberApp) {
       options = this.options.minifyCSS.options || {};
       options.registry = this.registry;
       processedStyles = preprocessMinifyCss(processedStyles, options);
-      vendorStyles    = preprocessMinifyCss(vendorStyles, options);
+      vendorStyles = preprocessMinifyCss(vendorStyles, options);
     }
 
     return mergeTrees([
